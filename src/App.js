@@ -5,7 +5,11 @@ import HomePage from "./pages/homepage/homepage.component";
 import ShopPage from "./pages/shop/shop.component";
 import Header from "./components/header/header.component";
 import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
-import { auth, createUserProfileDocument } from "./firebase/firebase.util";
+import {
+  auth,
+  createUserProfileDocument,
+  addCollectionAndDocuments,
+} from "./firebase/firebase.util";
 import { connect } from "react-redux";
 import { setCurrentUser } from "./redux/user/user.action";
 
@@ -13,6 +17,9 @@ import { selectCurrentUser } from "./redux/user/user.selectors";
 import { createStructuredSelector } from "reselect";
 
 import CheckoutPage from "./pages/checkout/checkout.component";
+
+import { selectCollectionForPreview } from "./redux/shop/shop.selectors";
+
 class App extends React.Component {
   /*constructor() {
     super();
@@ -24,7 +31,7 @@ class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    const { setCurrentUser } = this.props;
+    const { setCurrentUser, collectionArray } = this.props;
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
       //  this.setState({ currentUser: user });
       //   createUserProfileDocument(user);
@@ -41,6 +48,11 @@ class App extends React.Component {
         });
       } else {
         setCurrentUser(userAuth);
+        // we can push the data as collection in firebase
+        /*  addCollectionAndDocuments(
+          "abc",
+          collectionArray.map(({ title, items }) => ({ title, items }))
+        );*/
       }
     });
   }
@@ -74,6 +86,7 @@ class App extends React.Component {
 }
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
+  collectionArray: selectCollectionForPreview,
 });
 const mapDispatchToProps = (dispatch) => ({
   setCurrentUser: (user) => dispatch(setCurrentUser(user)),
